@@ -1,0 +1,264 @@
+PKCS#12 definition:
+https://tools.ietf.org/html/rfc7292
+
+basic structure of the object is:
+
+   PFX ::= SEQUENCE {
+       version     INTEGER {v3(3)}(v3,...),
+       authSafe    ContentInfo,
+       macData     MacData OPTIONAL
+   }
+
+   MacData ::= SEQUENCE {
+       mac         DigestInfo,
+       macSalt     OCTET STRING,
+       iterations  INTEGER DEFAULT 1
+       -- Note: The default is for historical reasons and its
+       --       use is deprecated.
+   }
+
+   DigestInfo ::= SEQUENCE {
+     digestAlgorithm DigestAlgorithmIdentifier,
+     digest Digest }
+
+   Digest ::= OCTET STRING
+
+   DigestAlgorithmIdentifier ::= AlgorithmIdentifier
+
+   AlgorithmIdentifier ::= SEQUENCE {
+     algortihm    OBJECT IDENTIFIER,
+     parameters   ANY DEFINED BY algorithm OPTIONAL }
+
+`parameters` are a NULL object for RSA, SHA-1 and SHA-2, and are omitted
+for DSA and ECDSA.
+
+   ContentInfo ::= SEQUENCE {
+     contentType ContentType,
+     content
+       [0] EXPLICIT ANY DEFINED BY contentType OPTIONAL }
+
+   ContentType ::= OBJECT IDENTIFIER
+
+For PKCS#7 files the `contentType` can be: `data`, `signedData`,
+`envelopedData`, `signedAndEnvelopedData`, `digestedData`, `encryptedData`.
+
+The contentType field of authSafe shall be of type data
+or signedData.  The content field of the authSafe shall, either
+directly (data case) or indirectly (signedData case), contain a BER-
+encoded value of type AuthenticatedSafe.
+
+   AuthenticatedSafe ::= SEQUENCE OF ContentInfo
+       -- Data if unencrypted
+       -- EncryptedData if password-encrypted
+       -- EnvelopedData if public key-encrypted
+
+
+     EncryptedPrivateKeyInfo ::= SEQUENCE {
+       encryptionAlgorithm  EncryptionAlgorithmIdentifier,
+       encryptedData        EncryptedData }
+
+     EncryptionAlgorithmIdentifier ::= AlgorithmIdentifier
+                                        { CONTENT-ENCRYPTION,
+                                          { KeyEncryptionAlgorithms } }
+
+     EncryptedData ::= OCTET STRING
+
+Example EncryptionAlgorithmIdentifier are pbeWithMD2AndDES-CBC and
+pbeWithMD5AndDES-CBC defined in PKCS#5.
+
+      PrivateKeyInfo ::= SEQUENCE {
+        version                   Version,
+        privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
+        privateKey                PrivateKey,
+        attributes           [0]  IMPLICIT Attributes OPTIONAL }
+
+      Version ::= INTEGER
+
+      PrivateKeyAlgorithmIdentifier ::= AlgorithmIdentifier
+
+      PrivateKey ::= OCTET STRING
+
+      Attributes ::= SET OF Attribute
+
+   rsadsi OBJECT IDENTIFIER ::= {iso(1) member-body(2) us(840) 113549}
+   pkcs OBJECT IDENTIFIER   ::= {rsadsi 1}
+   pkcs-5 OBJECT IDENTIFIER ::= {pkcs 5}
+
+PBKDF1 can be used only with PBES1 so there are no specifications for it.
+
+PBKDF2 definitions:
+
+      id-PBKDF2 OBJECT IDENTIFIER ::= {pkcs-5 12}
+
+
+The parameters field associated with this OID in an
+AlgorithmIdentifier shall have type PBKDF2-params:
+
+   PBKDF2-params ::= SEQUENCE {
+       salt CHOICE {
+           specified OCTET STRING,
+           otherSource AlgorithmIdentifier {{PBKDF2-SaltSources}}
+       },
+       iterationCount INTEGER (1..MAX),
+       keyLength INTEGER (1..MAX) OPTIONAL,
+       prf AlgorithmIdentifier {{PBKDF2-PRFs}} DEFAULT
+       algid-hmacWithSHA1 }
+
+      PBKDF2-PRFs ALGORITHM-IDENTIFIER ::= {
+        {NULL IDENTIFIED BY id-hmacWithSHA1},
+        {NULL IDENTIFIED BY id-hmacWithSHA224},
+        {NULL IDENTIFIED BY id-hmacWithSHA256},
+        {NULL IDENTIFIED BY id-hmacWithSHA384},
+        {NULL IDENTIFIED BY id-hmacWithSHA512},
+        {NULL IDENTIFIED BY id-hmacWithSHA512-224},
+        {NULL IDENTIFIED BY id-hmacWithSHA512-256},
+        ...
+      }
+
+         algid-hmacWithSHA1 AlgorithmIdentifier {{PBKDF2-PRFs}} ::=
+             {algorithm id-hmacWithSHA1, parameters NULL : NULL}
+
+PBES1 definitions:
+
+      pbeWithMD2AndDES-CBC OBJECT IDENTIFIER  ::= {pkcs-5 1}
+      pbeWithMD2AndRC2-CBC OBJECT IDENTIFIER  ::= {pkcs-5 4}
+      pbeWithMD5AndDES-CBC OBJECT IDENTIFIER  ::= {pkcs-5 3}
+      pbeWithMD5AndRC2-CBC OBJECT IDENTIFIER  ::= {pkcs-5 6}
+      pbeWithMD5AndXOR OBJECT IDENTIFIER      ::= {pkcs-5 9}
+      pbeWithSHA1AndDES-CBC OBJECT IDENTIFIER ::= {pkcs-5 10}
+      pbeWithSHA1AndRC2-CBC OBJECT IDENTIFIER ::= {pkcs-5 11}
+
+For each OID, the parameters field associated with the OID in an
+AlgorithmIdentifier shall have type PBEParameter:
+
+   PBEParameter ::= SEQUENCE {
+      salt OCTET STRING (SIZE(8)),
+      iterationCount INTEGER }
+
+ -  salt specifies the salt value, an eight-octet string.
+ -  iterationCount specifies the iteration count.
+
+from PKCS#12:
+
+      PKCS-12 {
+         iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-12(12)
+         modules(0) pkcs-12(1)}
+      pkcs-12PbeIds                    OBJECT IDENTIFIER ::= {pkcs-12 1}
+      pbeWithSHAAnd128BitRC4           OBJECT IDENTIFIER ::= {pkcs-12PbeIds 1}
+      pbeWithSHAAnd40BitRC4            OBJECT IDENTIFIER ::= {pkcs-12PbeIds 2}
+      pbeWithSHAAnd3-KeyTripleDES-CBC  OBJECT IDENTIFIER ::= {pkcs-12PbeIds 3}
+      pbeWithSHAAnd2-KeyTripleDES-CBC  OBJECT IDENTIFIER ::= {pkcs-12PbeIds 4}
+      pbeWithSHAAnd128BitRC2-CBC       OBJECT IDENTIFIER ::= {pkcs-12PbeIds 5}
+      pbewithSHAAnd40BitRC2-CBC        OBJECT IDENTIFIER ::= {pkcs-12PbeIds 6}
+
+Each of the six PBE object identifiers above has the following ASN.1
+type for parameters:
+
+   pkcs-12PbeParams ::= SEQUENCE {
+       salt        OCTET STRING,
+       iterations  INTEGER
+   }
+
+PBES2 definitions:
+
+   id-PBES2 OBJECT IDENTIFIER ::= {pkcs-5 13}
+
+The parameters field associated with this OID in an
+AlgorithmIdentifier shall have type PBES2-params:
+
+   PBES2-params ::= SEQUENCE {
+      keyDerivationFunc AlgorithmIdentifier {{PBES2-KDFs}},
+      encryptionScheme AlgorithmIdentifier {{PBES2-Encs}} }
+
+   PBES2-KDFs ALGORITHM-IDENTIFIER ::=
+      { {PBKDF2-params IDENTIFIED BY id-PBKDF2}, ... }
+
+   PBES2-Encs ALGORITHM-IDENTIFIER ::= { ... }
+
+PBMAC1 definitions:
+
+   id-PBMAC1 OBJECT IDENTIFIER ::= {pkcs-5 14}
+
+The parameters field associated with this OID in an
+AlgorithmIdentifier shall have type PBMAC1-params:
+
+   PBMAC1-params ::=  SEQUENCE {
+      keyDerivationFunc AlgorithmIdentifier {{PBMAC1-KDFs}},
+      messageAuthScheme AlgorithmIdentifier {{PBMAC1-MACs}} }
+
+   PBMAC1-KDFs ALGORITHM-IDENTIFIER ::=
+      { {PBKDF2-params IDENTIFIED BY id-PBKDF2}, ... }
+
+   PBMAC1-MACs ALGORITHM-IDENTIFIER ::= { ... }
+
+   digestAlgorithm OBJECT IDENTIFIER ::= {rsadsi 2} encryptionAlgorithm
+   OBJECT IDENTIFIER ::= {rsadsi 3}
+
+   id-hmacWithSHA1 OBJECT IDENTIFIER ::= {digestAlgorithm 7}
+
+   id-hmacWithSHA224 OBJECT IDENTIFIER ::= {digestAlgorithm 8}
+   id-hmacWithSHA256 OBJECT IDENTIFIER ::= {digestAlgorithm 9}
+   id-hmacWithSHA384 OBJECT IDENTIFIER ::= {digestAlgorithm 10}
+   id-hmacWithSHA512 OBJECT IDENTIFIER ::= {digestAlgorithm 11}
+   id-hmacWithSHA512-224 OBJECT IDENTIFIER ::= {digestAlgorithm 12}
+   id-hmacWithSHA512-256 OBJECT IDENTIFIER ::= {digestAlgorithm 13}
+
+DES-CBC-Pad:
+
+   desCBC OBJECT IDENTIFIER ::=
+      {iso(1) identified-organization(3) oiw(14) secsig(3)
+       algorithms(2) 7}
+
+The parameters field associated with this OID in an
+AlgorithmIdentifier shall have type OCTET STRING (SIZE(8)),
+specifying the initialization vector for CBC mode.
+
+DES-EDE3-CBC-Pad:
+
+   des-EDE3-CBC OBJECT IDENTIFIER ::= {encryptionAlgorithm 7}
+
+The parameters field associated with this OID in an
+AlgorithmIdentifier shall have type OCTET STRING (SIZE(8)),
+specifying the initialization vector for CBC mode.
+
+RC2-CBC-Pad:
+
+   rc2CBC OBJECT IDENTIFIER ::= {encryptionAlgorithm 2}
+
+The parameters field associated with OID in an AlgorithmIdentifier
+shall have type RC2-CBC-Parameter:
+
+   RC2-CBC-Parameter ::= SEQUENCE {
+       rc2ParameterVersion INTEGER OPTIONAL,
+       iv OCTET STRING (SIZE(8)) }
+
+RC5-CBC-Pad:
+
+   rc5-CBC-PAD OBJECT IDENTIFIER ::= {encryptionAlgorithm 9}
+
+parameters:
+   RC5-CBC-Parameters ::= SEQUENCE {
+      version INTEGER {v1-0(16)} (v1-0),
+      rounds INTEGER (8..127),
+      blockSizeInBits INTEGER (64 | 128),
+      iv OCTET STRING OPTIONAL }
+
+AES-CBC-Pad:
+
+   nistAlgorithms OBJECT IDENTIFIER ::= {joint-iso-itu-t(2) country(16)
+                                         us(840) organization(1)
+                                         gov(101) csor(3) 4}
+
+   aes OBJECT IDENTIFIER ::= { nistAlgorithms 1 }
+
+   aes128-CBC-PAD OBJECT IDENTIFIER ::= {aes 2 }
+   aes192-CBC-PAD OBJECT IDENTIFIER ::= { aes 22 }
+   aes256-CBC-PAD OBJECT IDENTIFIER ::= { aes 42 }
+
+The parameters field associated with this OID in an
+AlgorithmIdentifier shall have type OCTET STRING (SIZE(16)),
+specifying the initialization vector for CBC mode.
+
+PKCS#4 specification: https://tools.ietf.org/html/rfc8018
+PKCS#7 specification: https://tools.ietf.org/html/rfc2315
+PKCS#12 specification: https://tools.ietf.org/html/rfc7292

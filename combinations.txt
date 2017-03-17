@@ -1,0 +1,110 @@
+* MAC alg (optional)
+  * static:
+    * PBKDF: always PBKDF1
+  * options
+    * salt length (bytes)
+      * 8
+      * 0
+      * 20
+      * 32
+    * iteration count
+      * none (that means 1)
+      * 2048
+      * 1000000
+    * mac algorithm used
+      * MD5
+      * SHA1
+      * SHA224
+      * SHA256
+      * SHA384
+      * SHA512
+      * ...
+
+Encryption is optional, can be "NONE", is separate for certificate and key.
+
+* PBES1
+  * static:
+    * PBKDF: always PBKDF1
+  * options:
+    * salt length
+      * 8
+      * 0
+      * 16
+    * iteration count
+      * 2048
+      * 1
+      * 1000000
+    * algorithm name (hash, cipher, cipher size and cipher mode)
+      * pbeWithMD2AndDES-CBC (PBE-MD2-DES)
+      * pbeWithMD2AndRC2-CBC (PBE-MD2-RC2-64)
+      * pbeWithMD5AndDES-CBC (PBE-MD5-DES)
+      * pbeWithMD5AndRC2-CBC (PBE-MD5-RC2-64)
+      * pbeWithSHA1AndDES-CBC (PBE-SHA1-DES)
+      * pbeWithSHA1AndRC2-CBC (PBE-SHA1-RC2-64)
+      * pbeWithSHAAnd128BitRC4 (pbeWithSHA1And128BitRC4, PBE-SHA1-RC4-128)
+      * pbeWithSHAAnd40BitRC4 (pbeWithSHA1And40BitRC4, PBE-SHA1-RC4-40)
+      * pbeWithSHAAnd3-KeyTripleDES-CBC (pbeWithSHA1And3-KeyTripleDES-CBC, PBE-SHA1-3DES)
+      * pbeWithSHAAnd2-KeyTripleDES-CBC (pbeWithSHA1And2-KeyTripleDES-CBC, PBE-SHA1-2DES)
+      * pbeWithSHAAnd128BitRC2-CBC (pbeWithSHA1And128BitRC2-CBC, PBE-SHA1-RC2-128)
+      * pbewithSHAAnd40BitRC2-CBC (pbeWithSHA1And40BitRC2-CBC, PBE-SHA1-RC2-40)
+* PBES2
+  * options:
+    * PBKDF
+      * scrypt
+        * salt length
+          * 8
+          * 0
+          * 64
+        * N, r, p
+          * 16384, 8, 1
+      * PBKDF2
+        * salt length
+          * 8
+          * 0
+          * 16
+        * iteration count
+          * 2048
+          * 1
+          * 1000000
+        * derived key length
+        * PRF (optional)
+          * SHA1 (default)
+          * SHA224
+          * SHA256
+          * SHA384
+          * SHA512
+          * ...
+    * encryption scheme
+      * DES-CBC-Pad
+        * static: IV of size 8 bytes
+      * DES-EDE3-CBC-Pad
+        * static: IV of size 8 bytes
+      * RC2-CBC-Pad
+        * effective key bits (optional)
+          * 40
+          * 64
+          * 128
+        * static: IV
+      * RC5-CBC-Pad [SKIP]
+        * static: version (v1-0)
+        * rounds
+          * between 8 and 127
+        * block size in bits
+          * 64
+          * 128
+        * iv (optional)
+          * 8 bytes for 64 bit RC5
+          * 16 bytes for 128 bit RC5
+      * AES-CBC-Pad
+        * keysize:
+          * 128
+          * 192
+          * 256
+        * static: IV of size 16
+
+Password:
+ * empty
+ * ascii
+ * Unicode (provided as UTF-8)
+
+Password can be separate for MAC and for encryption
