@@ -3,6 +3,8 @@ different encryption algorithms.
 
 The names should be mostly self-explanatory, below are some more tricky parts:
 
+ - default - value is using the ASN.1 default value and as such is omitted
+   from DER encoding
  - salt - length of salt used for the algorithm, in bytes
  - iter - number of iterations that the PRF needs to be run, actual number
  - keyLen - for PBKDF2: length of the key to output
@@ -14,4 +16,4 @@ The names should be mostly self-explanatory, below are some more tricky parts:
  - pass - the parameter is the name of the password used for both integrity
    (MAC) and encryption
  - pass-mac - name of password used for integrity check
- - pass-cipher - name of password used for integrity check
+ - pass-cipher - name of password used for encryption
