@@ -20,3 +20,23 @@ The names should be mostly self-explanatory, below are some more tricky parts:
 
 Other encryption method names correspond with the short OID names assigned to
 them.
+
+Default settings
+================
+Different applications and libraries create files in different formats and
+with different settings. The following are some examples.
+
+OpenSSL
+-------
+
+OpenSSL `pkcs12` command by default will create a PKCS#12 file with settings
+like the ones used in
+rsa(2048,sha256),cert(pbeWithSHAAnd40BitRC2-CBC,salt(8),iter(2048)),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(8),iter(2048)),mac(sha1,salt(8),iter(2048)),pass(ascii).p12
+file, if it was compiled with RC2 support. If OpenSSL was compiled without
+RC2 support, it will create a file like
+rsa(2048,sha256),cert&key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(8),iter(2048)),mac(sha1,salt(8),iter(2048)),pass(ascii).p12
+.
+
+OpenSSL versions before 1.1.0, when PBES2 encryption is specified by user, will
+always use the default hmac for PBKDF2 (i.e. hmacWithSHA1). Later versions
+(i.e. 1.1.0 and 1.1.1) always use hmacWithSHA256 for PBKDF2 in PKCS#12 files.
