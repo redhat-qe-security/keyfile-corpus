@@ -40,3 +40,14 @@ rsa(2048,sha256),cert&key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(8),iter(2048)),ma
 OpenSSL versions before 1.1.0, when PBES2 encryption is specified by user, will
 always use the default hmac for PBKDF2 (i.e. hmacWithSHA1). Later versions
 (i.e. 1.1.0 and 1.1.1) always use hmacWithSHA256 for PBKDF2 in PKCS#12 files.
+
+GnuTLS
+------
+
+GnuTLS `certtool` command by default will create a PKCS#12 file with settings
+like the ones used in
+'rsa(2048,sha256),cert(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(8),iter(5318)),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(8),iter(5204)),mac(sha1,salt(8),iter(10240),pass(ascii).p12'
+
+If the cipher is specified (`aes-128`), it will create a PKCS#12 file with
+settings like the ones used in
+rsa(2048,sha256),cert(PBES2(PBKDF2(salt(18),iter(5127),keyLen(default),prf(default)),aes-128-cbc(IV(16)))),key(PBES2(PBKDF2(salt(16),iter(5301),keyLen(default),prf(default)),aes-128-cbc(IV(16)))),mac(sha1,salt(8),iter(10240)),pass(ascii).p12
