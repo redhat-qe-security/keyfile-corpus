@@ -17,6 +17,8 @@ The names should be mostly self-explanatory, below are some more tricky parts:
    (MAC) and encryption
  - pass-mac - name of password used for integrity check
  - pass-cipher - name of password used for encryption
+ - ber(inf) - when the files use the BER indefinite form encoding for some
+   items in the structure
 
 Other encryption method names correspond with the short OID names assigned to
 them.
@@ -51,3 +53,15 @@ like the ones used in
 If the cipher is specified (`aes-128`), it will create a PKCS#12 file with
 settings like the ones used in
 rsa(2048,sha256),cert(PBES2(PBKDF2(salt(18),iter(5127),keyLen(default),prf(default)),aes-128-cbc(IV(16)))),key(PBES2(PBKDF2(salt(16),iter(5301),keyLen(default),prf(default)),aes-128-cbc(IV(16)))),mac(sha1,salt(8),iter(10240)),pass(ascii).p12
+
+NSS
+---
+
+NSS `pk12util` command creates PKCS#12 files with the BER indefinite form
+encoding, and other settings as used in
+rsa(2048,sha256),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(16),iter(2000)),cert(pbeWithSHAAnd40BitRC2-CBC,salt(16),iter(2000)),mac(sha1,salt(16),iter(2000)),pass(ascii),ber(inf).p12
+and
+rsa(2048,sha256),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(16),iter(2000)),cert(pbeWithSHAAnd40BitRC2-CBC,salt(16),iter(2000)),mac(sha1,salt(16),iter(2000)),pass(unicode,nss-3.28.3-1.1.fc24),ber(inf).p12
+
+Note, order reversal (first key then certificate) reprsents the internal
+PKCS#12 PDU order.
