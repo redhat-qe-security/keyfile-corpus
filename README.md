@@ -23,6 +23,11 @@ The names should be mostly self-explanatory, below are some more tricky parts:
 Other encryption method names correspond with the short OID names assigned to
 them.
 
+Unless the file is marked as "malformed", the files are well-formed and
+can be created by using programming interfaces of either OpenSSL, GnuTLS
+or NSS. Not all files can be created using the command line interface
+of those libraries.
+
 Default settings
 ================
 Different applications and libraries create files in different formats and
@@ -31,7 +36,7 @@ with different settings. The following are some examples.
 OpenSSL
 -------
 
-OpenSSL `pkcs12` command by default will create a PKCS#12 file with settings
+OpenSSL 1.1.0 `pkcs12` command by default will create a PKCS#12 file with settings
 like the ones used in
 rsa(2048,sha256),cert(pbeWithSHAAnd40BitRC2-CBC,salt(8),iter(2048)),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(8),iter(2048)),mac(sha1,salt(8),iter(2048)),pass(ascii).p12
 file, if it was compiled with RC2 support. If OpenSSL was compiled without
@@ -63,5 +68,5 @@ rsa(2048,sha256),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(16),iter(2000)),cert(p
 and
 rsa(2048,sha256),key(pbeWithSHAAnd3-KeyTripleDES-CBC,salt(16),iter(2000)),cert(pbeWithSHAAnd40BitRC2-CBC,salt(16),iter(2000)),mac(sha1,salt(16),iter(2000)),pass(unicode,nss-3.28.3-1.1.fc24),ber(inf).p12
 
-Note, order reversal (first key then certificate) reprsents the internal
+Note, order reversal (first key then certificate) represents the internal
 PKCS#12 PDU order.

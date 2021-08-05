@@ -203,6 +203,29 @@ AlgorithmIdentifier shall have type PBMAC1-params:
    id-hmacWithSHA512-224 OBJECT IDENTIFIER ::= {digestAlgorithm 12}
    id-hmacWithSHA512-256 OBJECT IDENTIFIER ::= {digestAlgorithm 13}
 
+   hashAlgs OBJECT IDENTIFIER ::= { nistAlgorithms 2 }
+
+   id-sha256 OBJECT IDENTIFIER ::= { hashAlgs 1 }
+   id-sha384 OBJECT IDENTIFIER ::= { hashAlgs 2 }
+   id-sha512 OBJECT IDENTIFIER ::= { hashAlgs 3 }
+   id-sha224 OBJECT IDENTIFIER ::= { hashAlgs 4 }
+   id-sha512-224 OBJECT IDENTIFIER ::= { hashAlgs 5 }
+   id-sha512-256 OBJECT IDENTIFIER ::= { hashAlgs 6 }
+
+   id-sha3-224 OBJECT IDENTIFIER ::= { hashAlgs 7 }
+   id-sha3-256 OBJECT IDENTIFIER ::= { hashAlgs 8 }
+   id-sha3-384 OBJECT IDENTIFIER ::= { hashAlgs 9 }
+   id-sha3-512 OBJECT IDENTIFIER ::= { hashAlgs 10 }
+   id-shake128 OBJECT IDENTIFIER ::= { hashAlgs 11 }
+   id-shake256 OBJECT IDENTIFIER ::= { hashAlgs 12 }
+   id-shake128-len OBJECT IDENTIFIER ::= { hashAlgs 17 }
+   id-shake256-len OBJECT IDENTIFIER ::= { hashAlgs 18 }
+
+   id-hmacWithSHA3-224 OBJECT IDENTIFIER ::= { hashAlgs 13 }
+   id-hmacWithSHA3-256 OBJECT IDENTIFIER ::= { hashAlgs 14 }
+   id-hmacWithSHA3-384 OBJECT IDENTIFIER ::= { hashAlgs 15 }
+   id-hmacWithSHA3-512 OBJECT IDENTIFIER ::= { hashAlgs 16 }
+
 DES-CBC-Pad:
 
    desCBC OBJECT IDENTIFIER ::=
