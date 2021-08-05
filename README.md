@@ -19,6 +19,9 @@ The names should be mostly self-explanatory, below are some more tricky parts:
  - pass-cipher - name of password used for encryption
  - ber(inf) - when the files use the BER indefinite form encoding for some
    items in the structure
+ - sha512-224, sha512-256 - identifiers for the SHA2-512/224 and SHA2-512/256,
+   the SHA-2 hashes with a 512bit internal state but 224 and 256 bit output
+   respectively
 
 Other encryption method names correspond with the short OID names assigned to
 them.
