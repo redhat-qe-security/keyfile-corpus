@@ -20,6 +20,16 @@
       * SHA512
       * ...
 
+* PBMAC1:
+  * KDF
+    * PBKDF2
+    * scrypt
+    * ...
+  * MAC
+    * HMAC-SHA-256
+    * HMAC-SHA3-256
+    * ...
+
 Encryption is optional, can be "NONE", is separate for certificate and key.
 
 * PBES1

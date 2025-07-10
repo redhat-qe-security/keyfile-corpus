@@ -285,3 +285,6 @@ specifying the initialization vector for CBC mode.
 PKCS#4 specification: https://tools.ietf.org/html/rfc8018
 PKCS#7 specification: https://tools.ietf.org/html/rfc2315
 PKCS#12 specification: https://tools.ietf.org/html/rfc7292
+
+PBMAC1 in PKCS#12 specification:
+https://tools.ietf.org/html/rfc9579
